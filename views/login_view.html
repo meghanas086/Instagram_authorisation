@@ -1,0 +1,162 @@
+<!-- login_view.html -->
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Login</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        background-color: #f4f4f9;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+        margin: 0;
+      }
+
+      h1 {
+        text-align: center;
+        margin-bottom: 20px;
+        color: #333;
+      }
+
+      form {
+        background-color: white;
+        padding: 20px;
+        border-radius: 8px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        width: 300px;
+      }
+
+      div {
+        margin-bottom: 15px;
+      }
+
+      label {
+        font-size: 14px;
+        margin-bottom: 5px;
+        display: block;
+      }
+
+      input {
+        width: 100%;
+        padding: 10px;
+        font-size: 14px;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        box-sizing: border-box;
+      }
+
+      button {
+        width: 100%;
+        padding: 10px;
+        font-size: 16px;
+        background-color: #4caf50;
+        color: white;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+      }
+
+      button:hover {
+        background-color: #45a049;
+      }
+
+      #response-message {
+        text-align: center;
+        font-size: 14px;
+        color: red;
+        margin-top: 10px;
+      }
+
+      #signup-button {
+        width: 100%;
+        padding: 10px;
+        font-size: 16px;
+        background-color: #ccc;
+        color: black;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        margin-top: 10px;
+      }
+
+      #signup-button:hover {
+        background-color: #bbb;
+      }
+    </style>
+  </head>
+  <body>
+    <div>
+      <h1>Login</h1>
+      <form id="login-form">
+        <div>
+          <label for="identifier">Username / Email / Phone Number</label>
+          <input type="text" id="identifier" name="identifier" required />
+        </div>
+        <div>
+          <label for="password">Password</label>
+          <input type="password" id="password" name="password" required />
+        </div>
+        <button type="submit">Login</button>
+      </form>
+
+      <button type="button" id="signup-button">Sign-Up</button>
+
+      <p id="response-message"></p>
+    </div>
+
+    <script>
+      document
+        .getElementById("login-form")
+        .addEventListener("submit", async function (event) {
+          event.preventDefault();
+
+          const identifier = document.getElementById("identifier").value;
+          const password = document.getElementById("password").value;
+          const responseMessage = document.getElementById("response-message");
+
+          let loginData = {
+            password: password,
+          };
+          const emailPattern =
+            /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,6}$/;
+          const phonePattern = /^\d{10}$/;
+
+          if (emailPattern.test(identifier)) {
+            loginData.email = identifier;
+          } else if (phonePattern.test(identifier)) {
+            loginData.phonenumber = identifier;
+          } else {
+            loginData.username = identifier;
+          }
+
+          try {
+            const response = await fetch("http://127.0.0.1:5000/login", {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+              },
+              body: JSON.stringify(loginData),
+            });
+
+            const data = await response.json();
+            responseMessage.textContent = data.message;
+          } catch (error) {
+            console.error("Error:", error);
+            responseMessage.textContent =
+              "An error occurred. Please try again.";
+          }
+        });
+
+      document
+        .getElementById("signup-button")
+        .addEventListener("click", function () {
+          window.location.href = "signup_view.html";
+        });
+    </script>
+  </body>
+</html>
