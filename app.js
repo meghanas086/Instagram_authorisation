@@ -10,6 +10,8 @@ const signupRoute = require("./routers/signup_router.js");
 const { PORTS, URLS } = require("./constants.js");
 const PORT = PORTS.SERVER || 5000;
 
+console.log("hello");
+
 const app = express();
 
 const corsOpts = {
